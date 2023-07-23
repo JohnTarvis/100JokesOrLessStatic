@@ -1,5 +1,9 @@
 const NUMBER_OF_JOKES = 100;
 
+function loadSpinner(show){
+    show ? $('#Loading-Spinner').show() : $('#Loading-Spinner').hide();
+}
+
 function boxTheJokes(jokes){
     let jokeBox = `<div class="joke-box">`;
     for (let joke of jokes){
@@ -20,6 +24,7 @@ function boxTheJokes(jokes){
 
 async function getJokes(number = 10){
     let jokes = [];
+    loadSpinner(true);
     for(let count = 1; count * 10 < number; count++){
         const response = await axios.get('https://v2.jokeapi.dev/joke/Any?amount=10');
         jokes = [...jokes,...response.data.jokes];
@@ -29,6 +34,7 @@ async function getJokes(number = 10){
         const response = await axios.get(`https://v2.jokeapi.dev/joke/Any?amount=${remain}`);
         jokes = [...jokes,...response.data.jokes];
     }
+    loadSpinner(false);
     return jokes;
 }
 
