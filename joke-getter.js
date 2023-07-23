@@ -1,5 +1,7 @@
 const NUMBER_OF_JOKES = 100;
 
+loadSpinner(false);
+
 function loadSpinner(show){
     show ? $('#Loading-Spinner').show() : $('#Loading-Spinner').hide();
 }
