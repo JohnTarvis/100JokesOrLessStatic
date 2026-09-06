@@ -3,7 +3,7 @@ const NUMBER_OF_JOKES = 100;
 loadSpinner(false);
 
 function loadSpinner(show){
-    show ? $('#Loading-Spinner').show() : $('#Loading-Spinner').hide();
+    show ? $('#Loading-Spinner').stop(true, true).fadeIn(120) : $('#Loading-Spinner').stop(true, true).fadeOut(120);
 }
 
 function getJokeClasses(joke){
@@ -17,24 +17,64 @@ function getJokeClasses(joke){
     return classNames.join(' ');
 }
 
-function getJokeText(joke){
-    return joke.type === 'twopart' ? `${joke.setup} ${joke.delivery}` : joke.joke;
+function createJokeMeta(joke){
+    const jokeMeta = document.createElement('div');
+    jokeMeta.className = 'joke-meta';
+
+    const categoryBadge = document.createElement('span');
+    categoryBadge.className = 'joke-badge';
+    categoryBadge.textContent = joke.category;
+    jokeMeta.appendChild(categoryBadge);
+
+    if(!joke.safe){
+        const warningBadge = document.createElement('span');
+        warningBadge.className = 'joke-flag';
+        warningBadge.textContent = 'NSFW';
+        jokeMeta.appendChild(warningBadge);
+    }
+
+    return jokeMeta;
+}
+
+function createJokeContent(joke){
+    const jokeContent = document.createElement('div');
+    jokeContent.className = 'joke-body';
+
+    if(joke.type === 'twopart'){
+        const setupText = document.createElement('p');
+        setupText.className = 'joke-setup';
+        setupText.textContent = joke.setup;
+
+        const deliveryText = document.createElement('p');
+        deliveryText.className = 'joke-delivery';
+        deliveryText.textContent = joke.delivery;
+
+        jokeContent.append(setupText, deliveryText);
+        return jokeContent;
+    }
+
+    const jokeLine = document.createElement('p');
+    jokeLine.className = 'joke-line';
+    jokeLine.textContent = joke.joke;
+    jokeContent.appendChild(jokeLine);
+    return jokeContent;
 }
 
 function boxTheJokes(jokes){
     const jokeBox = document.createElement('div');
     jokeBox.className = 'joke-box';
     for (const joke of jokes){
-        const jokeElement = document.createElement('div');
+        const jokeElement = document.createElement('article');
         jokeElement.className = getJokeClasses(joke);
-        jokeElement.textContent = getJokeText(joke);
+        jokeElement.dataset.category = joke.category;
+        jokeElement.append(createJokeMeta(joke), createJokeContent(joke));
         jokeBox.appendChild(jokeElement);
     }
     return jokeBox;
 }
 
 async function getJokes(number = 10){
-    let jokes = [];
+    const jokes = [];
     loadSpinner(true);
     try {
         const fullBatches = Math.floor(number / 10);
@@ -53,25 +93,45 @@ async function getJokes(number = 10){
     }
 }
 
-$(".category").click(function(){
-    $(this).toggleClass("category-selected");
-    $(this).toggleClass("category-unselected");
-    $(this).hasClass("category-selected") ? $(`.${this.id}`).show() : $(`.${this.id}`).hide();
-    checkNSFW();
-});
-
-function checkNSFW(){
-    $("#nsfw").hasClass("category-selected") ? $(".unsafe").show() : $(".unsafe").hide();
+function getSelectedCategories(){
+    return new Set(
+        $('.category-selected')
+            .not('#nsfw')
+            .map(function(){
+                return this.id;
+            })
+            .get()
+    );
 }
+
+function syncVisibleJokes(){
+    const selectedCategories = getSelectedCategories();
+    const showUnsafe = $('#nsfw').hasClass('category-selected');
+
+    $('.joke').each(function(){
+        const matchesCategory = selectedCategories.has(this.dataset.category);
+        const passesSafetyFilter = showUnsafe || !this.classList.contains('unsafe');
+        $(this).toggle(matchesCategory && passesSafetyFilter);
+    });
+}
+
+$('.category').on('click', function(){
+    const isSelected = $(this)
+        .toggleClass('category-selected')
+        .toggleClass('category-unselected')
+        .hasClass('category-selected');
+
+    $(this).attr('aria-pressed', String(isSelected));
+    syncVisibleJokes();
+});
 
 async function setup(){
     const jokes = await getJokes(NUMBER_OF_JOKES);
     const jokeBox = boxTheJokes(jokes);
-    $("#main").append(jokeBox);
-    checkNSFW();
+    $('#jokes-mount').empty().append(jokeBox);
+    syncVisibleJokes();
 }
 
 $(async function() {
     await setup();
-
 });
