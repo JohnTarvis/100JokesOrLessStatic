@@ -3,6 +3,16 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Short jokes, one-liners, programming jokes, puns, dark jokes, spooky jokes, Christmas jokes, and miscellaneous humor in one filterable list.">
+        <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+        <meta name="theme-color" content="#050505">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="100 Jokes Or Less">
+        <meta property="og:title" content="100 Jokes Or Less | Short Jokes, One-Liners, and Puns">
+        <meta property="og:description" content="Short jokes, one-liners, programming jokes, puns, dark jokes, spooky jokes, Christmas jokes, and miscellaneous humor in one filterable list.">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="100 Jokes Or Less | Short Jokes, One-Liners, and Puns">
+        <meta name="twitter:description" content="Short jokes, one-liners, programming jokes, puns, dark jokes, spooky jokes, Christmas jokes, and miscellaneous humor in one filterable list.">
 
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-P0SJCQPMT1"></script>
@@ -18,24 +28,45 @@
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5475371228595052"
         crossorigin="anonymous"></script>
 
-        <title>100 Jokes Or Less</title>
+                <title>100 Jokes Or Less | Short Jokes, One-Liners, and Puns</title>
+                <link rel="dns-prefetch" href="//v2.jokeapi.dev">
+                <link rel="preconnect" href="https://v2.jokeapi.dev" crossorigin>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="./styles.css">
+                <script type="application/ld+json">
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "CollectionPage",
+                        "name": "100 Jokes Or Less",
+                        "headline": "Short jokes by category",
+                        "description": "Short jokes, one-liners, programming jokes, puns, dark jokes, spooky jokes, Christmas jokes, and miscellaneous humor in one filterable list.",
+                        "inLanguage": "en",
+                        "genre": ["Comedy", "Humor"],
+                        "about": [
+                            { "@type": "Thing", "name": "Short jokes" },
+                            { "@type": "Thing", "name": "Programming jokes" },
+                            { "@type": "Thing", "name": "Pun jokes" },
+                            { "@type": "Thing", "name": "Dark jokes" },
+                            { "@type": "Thing", "name": "Spooky jokes" },
+                            { "@type": "Thing", "name": "Christmas jokes" },
+                            { "@type": "Thing", "name": "One-liners" }
+                        ]
+                    }
+                </script>
       </head>
     <body>
         <div class="site-shell">
             <header id="top-banner" class="panel hero-panel">
-                <img src="./banner.png" alt="100 Jokes Or Less">
-                <p class="hero-tagline">A neon backlog of one-liners, groaners, and cursed internet humor.</p>
+                <img src="./banner.png" alt="100 Jokes Or Less" width="600" height="200" decoding="async" fetchpriority="high">
             </header>
 
             <main id="main">
                 <section class="panel controls-panel" aria-labelledby="filter-title">
-                    <p class="panel-kicker">Joke Deck</p>
-                    <h1 id="filter-title">Tune the feed</h1>
-                    <p class="panel-text">Use the category toggles to hide what you do not want. NSFW stays locked until you switch it on.</p>
+                                        <p class="panel-kicker">Short Humor</p>
+                                        <h1 id="filter-title">Short Jokes by Category</h1>
+                                        <p class="section-subtitle">Programming, pun, dark, spooky, Christmas, and misc jokes.</p>
 
                     <div class="safety-row">
                         <span class="control-label">Safety lock</span>
@@ -67,9 +98,8 @@
                 </section>
 
                 <section class="panel jokes-panel" aria-labelledby="jokes-title">
-                    <p class="panel-kicker">Live Board</p>
-                    <h2 id="jokes-title">Fresh pulls from the API</h2>
-                    <p class="panel-text">One hundred jokes load into a readable scroll stack with front-end category filtering.</p>
+                    <p class="panel-kicker">Joke Feed</p>
+                    <h2 id="jokes-title">One-Liners and Two-Part Jokes</h2>
 
                     <div class="loading-wrap">
                         <img src="./loading.gif" id="Loading-Spinner" alt="Loading jokes">
@@ -77,18 +107,25 @@
 
                     <div id="jokes-mount" aria-live="polite"></div>
                 </section>
+
+                <noscript>
+                    <section class="panel noscript-panel" aria-labelledby="noscript-title">
+                        <h2 id="noscript-title">JavaScript is required to load the current joke list</h2>
+                        <p class="noscript-text">This page covers short jokes, one-liners, programming jokes, puns, dark jokes, spooky jokes, Christmas jokes, and miscellaneous humor.</p>
+                    </section>
+                </noscript>
             </main>
 
-            <div class="meta-grid">
+            <footer class="meta-grid">
                 <section class="panel contact-panel" aria-labelledby="contact-title">
                     <p class="panel-kicker">Contact</p>
-                    <h2 id="contact-title">Still built like an old-school web project</h2>
-                    <p class="panel-text">Email the <a href="mailto:johnasaville@gmail.com">webmaster</a> if the feed breaks or you want to complain about the puns.</p>
+                    <h2 id="contact-title">Webmaster</h2>
+                    <p class="panel-text">Email the <a href="mailto:johnasaville@gmail.com">webmaster</a>.</p>
                 </section>
 
                 <aside id="external-links" class="panel links-panel" aria-labelledby="links-title">
                     <p class="panel-kicker">Web Ring</p>
-                    <h2 id="links-title">More jokes</h2>
+                    <h2 id="links-title">More Jokes</h2>
 
                     <div class="links-grid">
                         <div class="external-link">
@@ -108,10 +145,10 @@
                         </div>
                     </div>
                 </aside>
-            </div>
+            </footer>
         </div>
 
-        <script type="text/javascript" src="https://classic.avantlink.com/affiliate_app_confirm.php?mode=js&authResponse=b1efefa58dfb0bbf7cd46ac9f8f2733e3f709fe0"></script>
+        <script async src="https://classic.avantlink.com/affiliate_app_confirm.php?mode=js&authResponse=b1efefa58dfb0bbf7cd46ac9f8f2733e3f709fe0"></script>
         <script src="https://unpkg.com/jquery"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="./joke-getter.js"></script>
