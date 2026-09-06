@@ -6,56 +6,52 @@ function loadSpinner(show){
     show ? $('#Loading-Spinner').show() : $('#Loading-Spinner').hide();
 }
 
-function boxTheJokes(jokes){
-    let jokeBox = `<div class="joke-box">`;
-    for (let joke of jokes){
-        let className = 'joke';
-        className += ` ${joke.category}`;
-        if(!joke.safe){
-            className += ' unsafe';
-        }
-        if(joke.type === 'twopart'){
-            className += ' twopart';
-        }
-        jokeBox += `<div class="${className}"> ${joke.type === 'twopart'? joke.setup + " " + 
-        joke.delivery : joke.joke} </div>`
+function getJokeClasses(joke){
+    const classNames = ['joke', joke.category];
+    if(!joke.safe){
+        classNames.push('unsafe');
     }
-    jokeBox +=  '</div>';
+    if(joke.type === 'twopart'){
+        classNames.push('twopart');
+    }
+    return classNames.join(' ');
+}
+
+function getJokeText(joke){
+    return joke.type === 'twopart' ? `${joke.setup} ${joke.delivery}` : joke.joke;
+}
+
+function boxTheJokes(jokes){
+    const jokeBox = document.createElement('div');
+    jokeBox.className = 'joke-box';
+    for (const joke of jokes){
+        const jokeElement = document.createElement('div');
+        jokeElement.className = getJokeClasses(joke);
+        jokeElement.textContent = getJokeText(joke);
+        jokeBox.appendChild(jokeElement);
+    }
     return jokeBox;
 }
 
 async function getJokes(number = 10){
     let jokes = [];
     loadSpinner(true);
-    for(let count = 1; count * 10 < number; count++){
-        const response = await axios.get('https://v2.jokeapi.dev/joke/Any?amount=10');
-        jokes = [...jokes,...response.data.jokes];
+    try {
+        const fullBatches = Math.floor(number / 10);
+        for(let count = 0; count < fullBatches; count++){
+            const response = await axios.get('https://v2.jokeapi.dev/joke/Any?amount=10');
+            jokes.push(...response.data.jokes);
+        }
+        const remain = number % 10;
+        if(remain > 0){
+            const response = await axios.get(`https://v2.jokeapi.dev/joke/Any?amount=${remain}`);
+            jokes.push(...response.data.jokes);
+        }
+        return jokes;
+    } finally {
+        loadSpinner(false);
     }
-    const remain = number % 10;
-    if(!!remain){
-        const response = await axios.get(`https://v2.jokeapi.dev/joke/Any?amount=${remain}`);
-        jokes = [...jokes,...response.data.jokes];
-    }
-    loadSpinner(false);
-    return jokes;
 }
-
-$("#show-nsfw").change(function() {
-    if(this.checked) {
-        $(".unsafe").show();
-    } else {
-        $(".unsafe").hide();
-    }
-});
-
-$(".category").change(function(){
-    if(this.checked){
-        $(`.${this.id}`).show();
-    } else {
-        $(`.${this.id}`).hide();
-    }
-    checkNSFW();
-});
 
 $(".category").click(function(){
     $(this).toggleClass("category-selected");
