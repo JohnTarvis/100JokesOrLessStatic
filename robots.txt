@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-# Add a Sitemap line here once the production domain is finalized.
+Sitemap: https://100jokesorless.netlify.app/sitemap.xml
