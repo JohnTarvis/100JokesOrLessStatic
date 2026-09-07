@@ -1,4 +1,13 @@
 const NUMBER_OF_JOKES = 100;
+const MOBILE_BREAKPOINT = 760;
+const MOBILE_INITIAL_JOKES = 15;
+const MOBILE_BATCH_SIZE = 10;
+
+const loadState = {
+    incrementalLoading: window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches,
+    loadedCount: 0,
+    isLoadingMore: false
+};
 
 loadSpinner(false);
 
@@ -93,6 +102,72 @@ async function getJokes(number = 10){
     }
 }
 
+function getInitialJokeCount(){
+    return loadState.incrementalLoading ? MOBILE_INITIAL_JOKES : NUMBER_OF_JOKES;
+}
+
+function getLoadMoreCount(){
+    return loadState.incrementalLoading ? MOBILE_BATCH_SIZE : 0;
+}
+
+function getRemainingJokeCount(){
+    return Math.max(0, NUMBER_OF_JOKES - loadState.loadedCount);
+}
+
+function hasMoreJokes(){
+    return getRemainingJokeCount() > 0;
+}
+
+function updateLoadMoreControls(){
+    const shouldShowControls = loadState.incrementalLoading && hasMoreJokes();
+    $('#load-more-controls').prop('hidden', !shouldShowControls);
+    $('#load-more-button')
+        .prop('disabled', loadState.isLoadingMore)
+        .text(loadState.isLoadingMore ? 'Loading jokes...' : 'Load more jokes');
+}
+
+async function loadNextJokeBatch(requestedCount){
+    if(loadState.isLoadingMore || !hasMoreJokes()){
+        return;
+    }
+
+    loadState.isLoadingMore = true;
+    updateLoadMoreControls();
+
+    try {
+        const nextCount = Math.min(requestedCount, getRemainingJokeCount());
+        const jokes = await getJokes(nextCount);
+
+        if(jokes.length === 0){
+            loadState.loadedCount = NUMBER_OF_JOKES;
+            return;
+        }
+
+        $('#jokes-mount').append(boxTheJokes(jokes));
+        loadState.loadedCount += jokes.length;
+        syncVisibleJokes();
+    } finally {
+        loadState.isLoadingMore = false;
+        updateLoadMoreControls();
+    }
+}
+
+function shouldLoadMoreOnScroll(){
+    if(!loadState.incrementalLoading || loadState.isLoadingMore || !hasMoreJokes()){
+        return false;
+    }
+
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const threshold = document.documentElement.scrollHeight - 320;
+    return scrollPosition >= threshold;
+}
+
+function handleScrollLoad(){
+    if(shouldLoadMoreOnScroll()){
+        void loadNextJokeBatch(getLoadMoreCount());
+    }
+}
+
 function getSelectedCategories(){
     return new Set(
         $('.category-selected')
@@ -125,11 +200,20 @@ $('.category').on('click', function(){
     syncVisibleJokes();
 });
 
+$('#load-more-button').on('click', function(){
+    void loadNextJokeBatch(getLoadMoreCount());
+});
+
 async function setup(){
-    const jokes = await getJokes(NUMBER_OF_JOKES);
-    const jokeBox = boxTheJokes(jokes);
-    $('#jokes-mount').empty().append(jokeBox);
-    syncVisibleJokes();
+    $('#jokes-mount').empty();
+    loadState.loadedCount = 0;
+    updateLoadMoreControls();
+
+    if(loadState.incrementalLoading){
+        $(window).on('scroll', handleScrollLoad);
+    }
+
+    await loadNextJokeBatch(getInitialJokeCount());
 }
 
 $(async function() {
